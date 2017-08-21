@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+const app = require("../src/index");
+
+(async () => {
+  await app.run();
+})();

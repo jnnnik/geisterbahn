@@ -1,0 +1,17 @@
+{
+  "name": "geisterbahn",
+  "version": "0.4.0",
+  "description": "geisterbahn - web testing utility for Puppeteer",
+  "main": "src/index.js",
+  "author": "Jannik Lemberg",
+  "license": "MIT",
+  "bin": "./bin/geisterbahn",
+  "dependencies": {
+    "args": "^3.0.4",
+    "colors": "^1.1.2",
+    "debug": "^3.0.0",
+    "dependency-sorter": "^0.1.0",
+    "puppeteer": "^0.9.0",
+    "readline-sync": "^1.4.7"
+  }
+}
