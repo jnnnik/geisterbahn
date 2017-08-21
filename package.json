@@ -4,6 +4,7 @@
   "description": "geisterbahn - web testing utility for Puppeteer",
   "main": "src/index.js",
   "author": "Jannik Lemberg",
+  "repository": "jlemberg/geisterbahn",
   "license": "MIT",
   "bin": "./bin/geisterbahn",
   "dependencies": {
