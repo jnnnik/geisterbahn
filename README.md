@@ -23,17 +23,17 @@ After installing, run `./node_modules/.bin/geisterbahn help`; that should help. 
 | Option  | Detailed Description |
 | - | - |
 | `-d, --device`  | The device you want Puppeteer to emulate during the test run, ex. `-d 'Galaxy Note II'`; see [puppeteer/DeviceDescriptors](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) for a full list of device types |
-| `-e, --environment` | The environment you want geisterbahn to run your tests under. See [geisterbahnfile.js](#geisterbahnfile-js) for more information |
-| `-E, --environment-source` | **Very important option** The directory containing your `geisterbahnfile`. See [geisterbahnfile.js](#geisterbahnfile-js) for more information |
+| `-e, --environment` | The environment you want geisterbahn to run your tests under. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
+| `-g, --geisterbahnfile` | **Very important option** The directory containing your `geisterbahnfile`. Specify this in case your `geisterbahnfile` does not sit in the same directory you're calling `geisterbahn` from. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-i, --interactive` | Run geisterbahn in interactive mode: This will pause test execution before every test and wait for you to hit the Enter key |
 | `-s, --show` | Despite Puppeteer being a headless Chrome, you can give it its head back and show the browser running your tests using this option |
-| `-T, --test-source` | **Very important option** The directory containing your test files. See [Tests](#tests) for more information |
+| `-T, --test-source` | The directory containing your test files. Use this if you want to run tests from a directory other than the one specified in your `geisterbahnfile`. See [Tests](#tests) for more information |
 | `-t, --tests` | If you don't want to run all of your tests at once, specify a list of tests using this option and only those will be run. Comma separated |
 
 ### geisterbahnfile.js
-The `geisterbahnfile` is a configuration map you can use to store stage-specific settings, such as the stage's Base URL and basic auth credentials. In order to get started, copy [geisterbahnfile.js](geisterbahnfile.js) from this repository and adjust the values in there to your needs.
+The `geisterbahnfile` is a configuration map you can use to store stage-specific settings, such as the stage's Base URL and basic auth credentials. In order to get started quickly, copy [geisterbahnfile.js](geisterbahnfile.js) from this repository and adjust the values in there to your needs.
 
-The `-e, --environment` parameter used in the CLI documentation up there references the keys used in your `geisterbahnfile`.
+The `-e, --environment` parameter used in the CLI documentation up there references the keys used in your `geisterbahnfile`. If not specified, geisterbahn will look for the default environment to use in `geisterbahnfile.js` and yell at you if it doesn't find one there, either.
 
 Another neat thing to know is that you can run any (synchronous) JavaScript code in your `geisterbahnfile`, such as reading environment variables, making blocking HTTP requests and all that jazz.
 
@@ -68,7 +68,7 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 
 #### Page Object
 
-`page` is basically just an instance of Puppeteer's [Page](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page), however slightly modified in a small number of ways, that I'll go into a bit of detail right now.
+`page` is basically just an instance of Puppeteer's [Page](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page), however slightly modified in a small number of ways, which I'll go into a bit of detail about right now.
 
 | Page function | Description |
 | - | - |
@@ -87,6 +87,13 @@ Write all your tests wrapped inside of one of those async functions, and please,
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 0.5.0
+- removed basic auth configuration from geisterbahnfile
+- instead added additional header configuration to geisterbahnfile, which is much more handy
+- added test directory and default environment config parameters to geisterbahnfile
+- made a few error messages a bit more verbose
+- fixed a very annoying grammatical error in README.md
 
 #### 0.4.0
 - Initial release

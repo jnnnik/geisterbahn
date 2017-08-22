@@ -25,8 +25,10 @@ function testResult(success) {
   o("\n",false);
 }
 
-function fatalError(msg) {
-  o(`\n Fatal: ${msg}\n`.red);
+function fatalError(msg, except) {
+  o(`\n Fatal: ${msg}`.red);
+  if(except) o(` ${except.stack.grey}`);
+  o('');
   process.exit(1);
 }
 

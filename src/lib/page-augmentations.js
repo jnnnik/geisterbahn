@@ -1,13 +1,9 @@
-const env = require("./env");
+const env = require("./config").env;
 
 module.exports = {
   augment: async (page) => {
-    if(env.auth) {
-      const headerMap = new Map(
-        [["Authorization", "Basic " + new Buffer(`${env.auth.user}:${env.auth.pass}`).toString("base64")]]
-      );
-
-      await page.setExtraHTTPHeaders(headerMap);
+    if(env.additionalHeaders) {
+      await page.setExtraHTTPHeaders(env.additionalHeaders);
     }
 
     const _goto = page.goto;

@@ -3,10 +3,10 @@ const path = require("path");
 const fs = require("fs");
 const DependencySorter = require("dependency-sorter");
 
-const args = require("./args");
 const output = require("./output");
+const config = require("./config");
 
-const testDir = path.resolve(process.cwd(), args.testSource);
+const testDir = path.resolve(process.cwd(), config.geisterbahn.testsDirectory);
 let loadedTestRegistry = [];
 
 debug(`test path: ${testDir}`);
