@@ -77,6 +77,7 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 | `.getText(selector)` | Utility function that returns a `Promise<String>` containing the innerText for the DOM node matching `selector` |
 | `.getAttribute(selector, attributeName)` | Utility function that returns a `Promise<String>` containing the attribute named `attributeName` for the DOM node matching `selector` |
 | `.getElementCount(selector)` | Utility function that returns a `Promise<int>` containing the number of DOM nodes matching `selector` |
+| `.clickAndWait(selector)` | Clicks on `selector` and waits for navigation - useful for links and such |
 
 #### Test Function
 `test` is an async function that takes two parameters: A human readable string description of the second parameter, which is an async function containing test logic.

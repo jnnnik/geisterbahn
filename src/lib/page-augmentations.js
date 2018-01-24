@@ -36,5 +36,9 @@ module.exports = {
         return Promise.resolve(document.querySelectorAll(s).length);
       }, selector);
     };
+
+    page.clickAndWait = async function clickAndWait(selector) {
+      return Promise.all([page.waitForNavigation(), page.click(selector)]);
+    };
   }
 }
