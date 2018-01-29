@@ -89,6 +89,10 @@ What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still ver
 
 ## Version History
 
+#### 1.1.0
+- removed unnecessary (in hindsight) interactive option that was broken by 1.0.0 anyways
+- added much more useful -b option
+
 #### 1.0.0
 - bumped puppeteer version to 1.0.0
 - changed definition function from async to sync
