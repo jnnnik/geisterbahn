@@ -7,7 +7,7 @@ const args = require("./args");
 
 const results = [];
 const breakpoints =
-  (args.breakpoint + '').split(',')
+  (args.breakpoints + '').split(',')
   .map(unparsed => parseInt(unparsed));
 
 let currentTestNumber;
