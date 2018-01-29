@@ -1,9 +1,14 @@
 const debug = require("debug")("geisterbahn:runner");
+const readlineSync = require("readline-sync");
 
 const loader = require("./loader");
 const output = require("./output");
+const args = require("./args");
 
 const results = [];
+const breakpoints =
+  (args.breakpoint + '').split(',')
+  .map(unparsed => parseInt(unparsed));
 
 let currentTestNumber;
 
@@ -49,7 +54,11 @@ async function executeTestPackage(title, tests) {
       exc = e;
     }
     output.testResult(passed, currentTestNumber);
-    results.push({packageTitle:title, title:test, testNumber:currentTestNumber++, passed, exception:exc});
+    results.push({packageTitle:title, title:test, testNumber:currentTestNumber, passed, exception:exc});
+    if(breakpoints.indexOf(currentTestNumber) !== -1) {
+      readlineSync.question('- Breakpoint set, press <ENTER> to continue -');
+    }
+    currentTestNumber++;
   }
   return results;
 }

@@ -22,10 +22,10 @@ After installing, run `./node_modules/.bin/geisterbahn help`; that should help. 
 
 | Option  | Detailed Description |
 | - | - |
+| `-b, --breakpoint` | Specify one or more numbers here (comma separated) and geisterbahn will halt execution after running the specified test(s) |
 | `-d, --device`  | The device you want Puppeteer to emulate during the test run, ex. `-d 'Galaxy Note II'`; see [puppeteer/DeviceDescriptors](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) for a full list of device types |
 | `-e, --environment` | The environment you want geisterbahn to run your tests under. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-g, --geisterbahnfile` | **Very important option** The directory containing your `geisterbahnfile`. Specify this in case your `geisterbahnfile` does not sit in the same directory you're calling `geisterbahn` from. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
-| `-i, --interactive` | Run geisterbahn in interactive mode: This will pause test execution before every test and wait for you to hit the Enter key |
 | `-s, --show` | Despite Puppeteer being a headless Chrome, you can give it its head back and show the browser running your tests using this option |
 | `-T, --test-source` | The directory containing your test files. Use this if you want to run tests from a directory other than the one specified in your `geisterbahnfile`. See [Tests](#tests) for more information |
 | `-t, --tests` | If you don't want to run all of your tests at once, specify a list of tests using this option and only those will be run. Comma separated |

@@ -66,10 +66,6 @@ function summary(results) {
 
 }
 
-function interactiveMessage() {
-  o("\n " + "RUNNING IN INTERACTIVE MODE".underline + "\n Press <Enter> to advance each test when prompted by \"...\"");
-}
-
 function resetCharacter() {
   o("\r", false);
 }
@@ -82,6 +78,5 @@ module.exports = {
   testResult,
   fatalError,
   summary,
-  interactiveMessage,
   resetCharacter
 };

@@ -19,10 +19,6 @@ module.exports = {
     debug("hi");
     output.title(packageJson.name, packageJson.version);
 
-    if(args.interactive) {
-      output.interactiveMessage();
-    }
-
     const tests = await (args.tests ? loader.load(args.tests) : loader.loadAll());
 
     debug("launching puppeteer");
