@@ -8,20 +8,21 @@ function title(appName, versionNumber) {
   o("\n " +   `${appName} v${versionNumber}`.random.underline);
 }
 
-function testCount(count) {
-  o(`\n running ${count} test package${count > 1 ? "s" : ""}`.grey);
+function testCount(packageCount, testCount) {
+  o(`\n running ${testCount} test${testCount > 1 ? "s" : ""} in ${packageCount} test package${packageCount > 1 ? "s" : ""}`.grey);
 }
 
 function runningDefinition(definitionName) {
   o(`\n ${definitionName}`.magenta);
 }
 
-function runningTest(testName) {
-  o(`    ${"....".grey} ${testName.yellow}`, false);
+function runningTest(testName, testNumber) {
+  o(`    ${(testNumber+'').grey}\t ${testName.yellow}`, false);
 }
 
-function testResult(success) {
-  o( "\r    " + (success === true ? "PASS".green : "FAIL".red), false);
+function testResult(success, testNumber) {
+  testNumber = (testNumber+'');
+  o( "\r    " + (success === true ? testNumber.green : testNumber.red), false);
   o("\n",false);
 }
 
@@ -40,7 +41,7 @@ function summary(results) {
   let failures = [];
 
   for(const resultSet of results){
-    for(const testResult of resultSet.tests) {
+    for(const testResult of resultSet) {
       testCount += 1;
       if(testResult.passed !== true) {
         failCount += 1;
@@ -55,7 +56,7 @@ function summary(results) {
   o(`\n Summary: ${ (testCount + "").yellow }${":".grey}${ (passCount + "").green }${"/".grey}${ (failCount + "").red }\n`);
 
   for(const failure of failures) {
-    o(` "${failure.definitionName} - ${failure.description}" FAILED `.black.bgRed);
+    o(` #${failure.testNumber} "${failure.packageTitle} - ${failure.title}" FAILED `.black.bgRed);
     const except = failure.exception;
     if(except.message) {
       o(` ${except.message}`);

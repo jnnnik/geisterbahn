@@ -53,7 +53,11 @@ async function scanDirForTests(dir) {
 async function requireAll(testNames) {
   debug(`requiring all: "${testNames}"`);
   return new Promise(resolve => {
-    resolve(testNames.map(testName => requireTest(testName)));
+    resolve(
+      testNames
+        .filter( testName => testName.indexOf('_') !== 0 )
+        .map(testName => requireTest(testName))
+    );
   });
 }
 

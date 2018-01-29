@@ -43,15 +43,15 @@ Let's get to the meat of things. Place your test packages in a directory, pass t
 ```
 module.exports = {
   title: "Home Page",
-  definition: async (page, test) => {
-    await page.goto("/");
-    await test("headline is correct", async () => {
+  definition: (page, test) => {
+    test("headline is correct", async () => {
+      await page.goto("/");
       const pageTitle = await page.getHtml("h1");
       if(pageTitle !== "Best Website Ever") {
         throw new Error("this is the worst day ever");
       }
     });
-    await test("headline is really correct", async () => {
+    test("headline is really correct", async () => {
       const pageTitle = await page.getHtml("h1");
       if(pageTitle !== "Super Best Website Ever") {
         throw new Error("oh no, not again!");
@@ -80,14 +80,20 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 | `.clickAndWait(selector)` | Clicks on `selector` and waits for navigation - useful for links and such |
 
 #### Test Function
-`test` is an async function that takes two parameters: A human readable string description of the second parameter, which is an async function containing test logic.
+`test` is a function that takes two parameters: A human readable string description of the second parameter, which is an async function containing test logic.
 
-Write all your tests wrapped inside of one of those async functions, and please, do not write them like I did in that example. Use an assertion library instead.
+Write all your tests and page movements wrapped inside of one of those functions, and please, do not write them like I did in that example. Use an assertion library instead.
 
 ## Development / Contributing
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 1.0.0
+- bumped puppeteer version to 1.0.0
+- changed definition function from async to sync
+- changed test function from async to stack-based
+- introduced clickAndWait helper function
 
 #### 0.5.0
 - removed basic auth configuration from geisterbahnfile

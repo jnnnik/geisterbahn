@@ -1,15 +1,16 @@
 const debug = require("debug")("geisterbahn:runner");
 
 const loader = require("./loader");
-const TestCase = require("./test-case");
 const output = require("./output");
 
 const results = [];
 
+let currentTestNumber;
+
 function determineReturnCodeForResults(results) {
   debug("determining return code based on results");
   for(const testPackage of results) {
-    for(const test of testPackage.tests) {
+    for(const test of testPackage) {
       if(!test.passed) {
         return 1;
       }
@@ -19,18 +20,53 @@ function determineReturnCodeForResults(results) {
   return 0;
 }
 
-async function run(testConfigurations, page) {
-  debug(`running ${testConfigurations.length} tests`);
-  output.testCount(testConfigurations.length);
+function registerAllTestsForConfigurations(testConfigurations, page) {
+  let tests = {};
+  let testCount = 0;
   for(const testConfiguration of testConfigurations) {
-    debug(`running "${testConfiguration.name}"`);
-    const testCase = new TestCase(testConfiguration);
-    await testCase.run(page);
-    results.push({title:testConfiguration.title, tests:testCase.getTests()});
-    debug(`done running "${testConfiguration.name}"`);
+    testConfiguration.definition(page, (testTitle, testDefinition) => {
+      testCount++;
+      const packageTitle = testConfiguration.title;
+      if(!tests[packageTitle]) tests[packageTitle] = {};
+      tests[packageTitle][testTitle] = testDefinition;
+    });
   }
-  output.summary(results);
-  return determineReturnCodeForResults(results);
+  return [tests, testCount];
+}
+
+async function executeTestPackage(title, tests) {
+  output.runningDefinition(title);
+  let results = [];
+  for(const test in tests) {
+    output.runningTest(test, currentTestNumber);
+    let passed = false;
+    let exc;
+    try {
+      await tests[test]();
+      passed = true;
+    } catch (e) {
+      passed = false;
+      exc = e;
+    }
+    output.testResult(passed, currentTestNumber);
+    results.push({packageTitle:title, title:test, testNumber:currentTestNumber++, passed, exception:exc});
+  }
+  return results;
+}
+
+async function run(testConfigurations, page) {
+  debug(`running ${testConfigurations.length} test packages`);
+  const configurationCount = testConfigurations.length;
+  const [testPackages, testCount] = registerAllTestsForConfigurations(testConfigurations, page);
+  debug(`registered ${testCount} tests`);
+  output.testCount(testConfigurations.length, testCount);
+  currentTestNumber = 1;
+  let resultSets = [];
+  for(const testPackage in testPackages) {
+    resultSets.push( await executeTestPackage(testPackage, testPackages[testPackage]) );
+  }
+  output.summary(resultSets);
+  return determineReturnCodeForResults(resultSets);
 }
 
 module.exports = {run};
