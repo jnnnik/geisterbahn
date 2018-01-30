@@ -62,9 +62,9 @@ module.exports = {
 ```
 Like this.
 
-So, a test file is just a PO**JS**O (plain old JS-object) with two important keys: `title` is a human readable title for your package o' tests, whereas `definition` is an async function containing the tests themselves.
+So, a test file is just a PO**JS**O (plain old JS-object) with two important keys: `title` is a human readable title for your package o' tests, whereas `definition` is a function containing the tests themselves.
 
-`definition` is passed two arguments: An object named `page` and an async function named `test`.
+`definition` is passed two arguments: An object named `page` and a function named `test`.
 
 #### Page Object
 
