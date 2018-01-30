@@ -56,7 +56,7 @@ async function executeTestPackage(title, tests) {
     output.testResult(passed, currentTestNumber);
     results.push({packageTitle:title, title:test, testNumber:currentTestNumber, passed, exception:exc});
     if(breakpoints.indexOf(currentTestNumber) !== -1) {
-      readlineSync.question('- Breakpoint set, press <ENTER> to continue -');
+      readlineSync.question(' - Breakpoint set, press <ENTER> to continue - ');
     }
     currentTestNumber++;
   }
