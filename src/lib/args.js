@@ -7,6 +7,7 @@ args
   .option("test-source", "Path from which test packages are to be loaded (overrides geisterbahnfile.js)")
   .option("environment", "Environment to use")
   .option("geisterbahnfile", "Directory containing geisterbahnfile.js", ".")
-  .option("breakpoints", "Halt execution after running the test with the specified number(s) (comma separated)");
+  .option("breakpoints", "Halt execution after running the test with the specified number(s) (comma separated)")
+  .option("loop-point", "Repeat execution after running the test with the specified number");
 
 module.exports = args.parse(process.argv);

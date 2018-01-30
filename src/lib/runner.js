@@ -10,7 +10,10 @@ const breakpoints =
   (args.breakpoints + '').split(',')
   .map(unparsed => parseInt(unparsed));
 
+const loopPoint = parseInt(args.loopPoint);
+
 let currentTestNumber;
+let loopPointTriggered = false;
 
 function determineReturnCodeForResults(results) {
   debug("determining return code based on results");
@@ -56,11 +59,29 @@ async function executeTestPackage(title, tests) {
     output.testResult(passed, currentTestNumber);
     results.push({packageTitle:title, title:test, testNumber:currentTestNumber, passed, exception:exc});
     if(breakpoints.indexOf(currentTestNumber) !== -1) {
-      readlineSync.question(' - Breakpoint set, press <ENTER> to continue - ');
+      readlineSync.question('Breakpoint set, press <ENTER> to continue ');
+    }
+    if(currentTestNumber === loopPoint) {
+      loopPointTriggered = true;
+      break;
     }
     currentTestNumber++;
   }
   return results;
+}
+
+async function executeTestPackages(testPackages, testCount) {
+  output.testCount(Object.keys(testPackages).length, testCount);
+  currentTestNumber = 1;
+  let resultSets = [];
+  for(const testPackage in testPackages) {
+    resultSets.push( await executeTestPackage(testPackage, testPackages[testPackage]) );
+    if(loopPointTriggered) {
+      break;
+    }
+  }
+  output.summary(resultSets);
+  return resultSets;
 }
 
 async function run(testConfigurations, page) {
@@ -68,13 +89,17 @@ async function run(testConfigurations, page) {
   const configurationCount = testConfigurations.length;
   const [testPackages, testCount] = registerAllTestsForConfigurations(testConfigurations, page);
   debug(`registered ${testCount} tests`);
-  output.testCount(testConfigurations.length, testCount);
-  currentTestNumber = 1;
-  let resultSets = [];
-  for(const testPackage in testPackages) {
-    resultSets.push( await executeTestPackage(testPackage, testPackages[testPackage]) );
-  }
-  output.summary(resultSets);
+
+  let resultSets;
+
+  do {
+    loopPointTriggered = false;
+    resultSets = await executeTestPackages(testPackages, testCount);
+    if(loopPointTriggered) {
+      readlineSync.question('Loop point set, press <ENTER> to restart ');
+    }
+  } while(loopPointTriggered);
+
   return determineReturnCodeForResults(resultSets);
 }
 
