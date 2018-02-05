@@ -21,33 +21,29 @@ module.exports = {
 
     const tests = await (args.tests ? loader.load(args.tests) : loader.loadAll());
 
-    debug("launching puppeteer");
-
-    puppeteer.launch(puppeteerOptions).then(async browser => {
-
-      let result;
+    let result;
       
-      do {
-        const page = await browser.newPage();
-        if(args.device) {
-          await page.emulate(devices[args.device]);
-        }
-        await pageAugmentations.augment(page);
-        result = await runner.run(tests, page);
-        if(result.loop) {
-          const userInput = readlineSync.question('Loop point hit; press <Enter> to restart, enter "q" to quit: ');
-          if(userInput === 'q') break;
-        }
-        page.close();
-      } while (result.loop);
-
-      if(args.show) {
-        readlineSync.question("All done here, press <Enter> to exit");
+    do {
+      debug("launching puppeteer");
+      const browser = await puppeteer.launch(puppeteerOptions);
+      const page = await browser.newPage();
+      if(args.device) {
+        await page.emulate(devices[args.device]);
       }
-
+      await pageAugmentations.augment(page);
+      result = await runner.run(tests, page);
+      if(result.loop) {
+        const userInput = readlineSync.question('Loop point hit; press <Enter> to restart, enter "q" to quit: ');
+        if(userInput === 'q') break;
+      }
       browser.close();
+    } while (result.loop);
 
-      process.exit(result.returnCode);
-    });
+    if(args.show) {
+      readlineSync.question("All done here, press <Enter> to exit");
+    }
+
+
+    process.exit(result.returnCode);
   }
 };
