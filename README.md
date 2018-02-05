@@ -90,6 +90,11 @@ What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still ver
 
 ## Version History
 
+#### 1.3.0
+- introduced simple test dependency management (undocumented for the time being)
+- rewrote lots of loader code
+- fixed attempts to autoload non-readable test files
+
 #### 1.2.0
 - introduced cli option -l
 

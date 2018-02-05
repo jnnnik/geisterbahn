@@ -1,13 +1,13 @@
 const debug = require("debug")("geisterbahn:loader");
 const path = require("path");
 const fs = require("fs");
-const DependencySorter = require("dependency-sorter");
 
 const output = require("./output");
 const config = require("./config");
 
 const testDir = path.resolve(process.cwd(), config.geisterbahn.testsDirectory);
-let loadedTestRegistry = [];
+
+let requiredTests = [];
 
 debug(`test path: ${testDir}`);
 
@@ -29,17 +29,16 @@ async function loadAll() {
   debug("loading all");
   const testNames = await scanDirForTests(testDir);
   debug(`found: "${testNames}"`);
-  const tests = await requireAll(testNames);
-  return sortDependencies(tests);
+  requireAll(testNames);
+  return requiredTests;
 }
 
 async function load(arg) {
   await checkTestsDir();
   const testNames = arg.split(",");
   debug(`loading "${testNames}"`);
-  const tests = await requireAll(testNames);
-  loadTestDependencies(tests);
-  return sortDependencies(tests);
+  requireAll(testNames);
+  return requiredTests;
 }
 
 async function scanDirForTests(dir) {
@@ -50,49 +49,37 @@ async function scanDirForTests(dir) {
   });
 }
 
-async function requireAll(testNames) {
+function requireAll(testNames) {
   debug(`requiring all: "${testNames}"`);
-  return new Promise(resolve => {
-    resolve(
-      testNames
-        .filter( testName => testName.indexOf('_') !== 0 )
-        .map(testName => requireTest(testName))
-    );
-  });
-}
-
-function loadTestDependencies(tests) {
-  for(const test of tests) {
-    debug(`checking "${test.name}" for dependencies`);
-    if(test.dependsOn) {
-      debug(`"${test.name} depends on ${test.dependsOn}"`);
-      if(loadedTestRegistry.indexOf(test.dependsOn) === -1) {
-        tests.push(requireTest(test.dependsOn));
+  testNames
+    .filter(testName => {
+      if(testName.indexOf('_') === 0) return false;
+      try {
+        const stat = fs.lstatSync(path.resolve(testDir, `${testName}.js`));
+        if(stat.isDirectory()) return false;
+      } catch(_) {
+        return false;
       }
-    } else {
-      debug("none");
-    }
-  }
+      return true;
+    })
+    .forEach(testName => requireTest(testName));
 }
 
 function requireTest(testName) {
-  debug(`requiring "${testName}"`);
-  loadedTestRegistry.push(testName);
+  debug(`requireTest("${testName}")`);
   const requirePath = path.resolve(testDir, testName);
   try {
     const required = require( requirePath );
     required.name = testName;
-    return required;
+    if(required.dependsOn) {
+      debug(`requiring dependency "${required.dependsOn}"`);
+      requireTest(required.dependsOn);
+    }
+    debug(`pushing ${testName} onto the test stack`);
+    requiredTests.push(required);
   } catch (e) {
     output.fatalError(`Unable to load test ${requirePath}`);
   }
-}
-
-function sortDependencies(tests) {
-  debug("sorting tests by dependencies");
-  if(tests.length === 1) return tests;
-  const sorter = new DependencySorter({dependsProperty:"dependsOn", idProperty:"name"});
-  return sorter.sort(tests);
 }
 
 module.exports = { load, loadAll };

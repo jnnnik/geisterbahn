@@ -99,10 +99,6 @@ debug@^3.1.0:
   dependencies:
     ms "2.0.0"
 
-dependency-sorter@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/dependency-sorter/-/dependency-sorter-0.1.0.tgz#ab55bd28ea205172a5a6c6ec46a5e6170e07131b"
-
 es6-promise@^4.0.3:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.4.tgz#dc4221c2b16518760bd8c39a52d8f356fc00ed29"

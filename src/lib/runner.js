@@ -31,12 +31,14 @@ function determineReturnCodeForResults(results) {
 function registerAllTestsForConfigurations(testConfigurations, page) {
   let tests = {};
   let testCount = 0;
-  for(const testConfiguration of testConfigurations) {
+  for(let i=0, j=testConfigurations.length; i<j; i++) {
+    const testConfiguration = testConfigurations[i];
+    const testPackageKey = `${i}${testConfiguration.name}`;
+
     testConfiguration.definition(page, (testTitle, testDefinition) => {
       testCount++;
-      const packageTitle = testConfiguration.title;
-      if(!tests[packageTitle]) tests[packageTitle] = {};
-      tests[packageTitle][testTitle] = testDefinition;
+      if(!tests[testPackageKey]) tests[testPackageKey] = {title: testConfiguration.title, tests: {}};
+      tests[testPackageKey]['tests'][testTitle] = testDefinition;
     });
   }
   return [tests, testCount];
@@ -74,8 +76,9 @@ async function executeTestPackages(testPackages, testCount) {
   output.testCount(Object.keys(testPackages).length, testCount);
   currentTestNumber = 1;
   let resultSets = [];
-  for(const testPackage in testPackages) {
-    resultSets.push( await executeTestPackage(testPackage, testPackages[testPackage]) );
+  for(const testPackageKey in testPackages) {
+    const testPackage = testPackages[testPackageKey];
+    resultSets.push( await executeTestPackage(testPackage.title, testPackage.tests) );
     if(loopPointTriggered) {
       break;
     }
