@@ -26,6 +26,7 @@ After installing, run `./node_modules/.bin/geisterbahn help`; that should help. 
 | `-d, --device`  | The device you want Puppeteer to emulate during the test run, ex. `-d 'Galaxy Note II'`; see [puppeteer/DeviceDescriptors](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) for a full list of device types |
 | `-e, --environment` | The environment you want geisterbahn to run your tests under. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-g, --geisterbahnfile` | **Very important option** The directory containing your `geisterbahnfile`. Specify this in case your `geisterbahnfile` does not sit in the same directory you're calling `geisterbahn` from. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
+| `-l, --loop-point` | Repeat all tests after hitting the test case specified by this option |
 | `-s, --show` | Despite Puppeteer being a headless Chrome, you can give it its head back and show the browser running your tests using this option |
 | `-T, --test-source` | The directory containing your test files. Use this if you want to run tests from a directory other than the one specified in your `geisterbahnfile`. See [Tests](#tests) for more information |
 | `-t, --tests` | If you don't want to run all of your tests at once, specify a list of tests using this option and only those will be run. Comma separated |
@@ -88,6 +89,9 @@ Write all your tests and page movements wrapped inside of one of those functions
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 1.2.0
+- introduced cli option -l
 
 #### 1.1.1
 - fixed a feature-breaking typo. woe is me.
