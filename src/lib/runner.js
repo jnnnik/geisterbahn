@@ -92,15 +92,12 @@ async function run(testConfigurations, page) {
 
   let resultSets;
 
-  do {
-    loopPointTriggered = false;
-    resultSets = await executeTestPackages(testPackages, testCount);
-    if(loopPointTriggered) {
-      readlineSync.question('Loop point set, press <ENTER> to restart ');
-    }
-  } while(loopPointTriggered);
+  resultSets = await executeTestPackages(testPackages, testCount);
 
-  return determineReturnCodeForResults(resultSets);
+  return {
+    returnCode: determineReturnCodeForResults(resultSets),
+    loop: loopPointTriggered
+  };
 }
 
 module.exports = {run};
