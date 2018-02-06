@@ -77,12 +77,16 @@ function requireFromTestDir(testName) {
 
 function requirePartials(partials, partialDefinitions) {
   for(const partial of partials) {
-    const requiredPartial = requireFromTestDir(partial);
+    const partialName = Array.isArray(partial) ? partial[0] : partial;
+    const requiredPartial = requireFromTestDir(partialName);
     if(requiredPartial.partials) {
       requirePartials(requiredPartial.partials, partialDefinitions);
     }
     if(requiredPartial.definition) {
-      partialDefinitions.push(requireFromTestDir(partial));
+      if(Array.isArray(partial)) {
+        requiredPartial.args = partial[1];
+      }
+      partialDefinitions.push(requiredPartial);
     }
   }
 }

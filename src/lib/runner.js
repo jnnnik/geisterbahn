@@ -32,12 +32,12 @@ function registerAllTestsForConfigurations(testConfigurations, page) {
   let tests = {};
   let testCount = 0;
 
-  function registerDefinition(key, title, definition) {
+  function registerDefinition(key, title, definition, args) {
     definition(page, (testTitle, testDefinition) => {
       testCount++;
       if(!tests[key]) tests[key] = {title: title, tests: {}};
       tests[key]['tests'][`${testTitle}${testCount}`] = {definition: testDefinition, title: testTitle};
-    });
+    }, args);
   }
 
   for(let i=0, j=testConfigurations.length; i<j; i++) {
@@ -46,7 +46,7 @@ function registerAllTestsForConfigurations(testConfigurations, page) {
 
     if(testConfiguration.partialDefinitions) {
       for(const partial of testConfiguration.partialDefinitions) {
-        registerDefinition(testPackageKey, testConfiguration.title, partial.definition);
+        registerDefinition(testPackageKey, testConfiguration.title, partial.definition, partial.args);
       }
     }
 

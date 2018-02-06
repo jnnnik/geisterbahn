@@ -130,6 +130,9 @@ What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still ver
 
 ## Version History
 
+#### 1.4.1
+- addded possibility to inject arguments into test partials
+
 #### 1.4.0
 - discarded simple test dependency management
 - introduced more complex partial system
