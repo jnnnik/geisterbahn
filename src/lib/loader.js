@@ -65,21 +65,39 @@ function requireAll(testNames) {
     .forEach(testName => requireTest(testName));
 }
 
+function requireFromTestDir(testName) {
+  const requirePath = path.resolve(testDir, testName);
+  debug(`requiring ${testName} from ${requirePath}`);
+  try {
+    return require(requirePath);
+  } catch(e) {
+    output.fatalError(`Unable to load test ${requirePath}`, e);
+  }
+}
+
+function requirePartials(partials, partialDefinitions) {
+  for(const partial of partials) {
+    const requiredPartial = requireFromTestDir(partial);
+    if(requiredPartial.partials) {
+      requirePartials(requiredPartial.partials, partialDefinitions);
+    }
+    if(requiredPartial.definition) {
+      partialDefinitions.push(requireFromTestDir(partial));
+    }
+  }
+}
+
 function requireTest(testName) {
   debug(`requireTest("${testName}")`);
-  const requirePath = path.resolve(testDir, testName);
-  try {
-    const required = require( requirePath );
-    required.name = testName;
-    if(required.dependsOn) {
-      debug(`requiring dependency "${required.dependsOn}"`);
-      requireTest(required.dependsOn);
-    }
-    debug(`pushing ${testName} onto the test stack`);
-    requiredTests.push(required);
-  } catch (e) {
-    output.fatalError(`Unable to load test ${requirePath}`);
+  const required = requireFromTestDir(testName);
+  required.name = testName;
+  if(required.partials) {
+    debug('requiring partials');
+    required.partialDefinitions = [];
+    requirePartials(required.partials, required.partialDefinitions);    
   }
+  debug(`pushing ${testName} onto the test stack`);
+  requiredTests.push(required);
 }
 
 module.exports = { load, loadAll };

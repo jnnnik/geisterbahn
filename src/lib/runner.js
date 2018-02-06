@@ -31,15 +31,28 @@ function determineReturnCodeForResults(results) {
 function registerAllTestsForConfigurations(testConfigurations, page) {
   let tests = {};
   let testCount = 0;
+
+  function registerDefinition(key, title, definition) {
+    definition(page, (testTitle, testDefinition) => {
+      testCount++;
+      if(!tests[key]) tests[key] = {title: title, tests: {}};
+      tests[key]['tests'][`${testTitle}${testCount}`] = {definition: testDefinition, title: testTitle};
+    });
+  }
+
   for(let i=0, j=testConfigurations.length; i<j; i++) {
     const testConfiguration = testConfigurations[i];
     const testPackageKey = `${i}${testConfiguration.name}`;
 
-    testConfiguration.definition(page, (testTitle, testDefinition) => {
-      testCount++;
-      if(!tests[testPackageKey]) tests[testPackageKey] = {title: testConfiguration.title, tests: {}};
-      tests[testPackageKey]['tests'][testTitle] = testDefinition;
-    });
+    if(testConfiguration.partialDefinitions) {
+      for(const partial of testConfiguration.partialDefinitions) {
+        registerDefinition(testPackageKey, testConfiguration.title, partial.definition);
+      }
+    }
+
+    if(testConfiguration.definition) {
+      registerDefinition(testPackageKey, testConfiguration.title, testConfiguration.definition);
+    }
   }
   return [tests, testCount];
 }
@@ -47,19 +60,19 @@ function registerAllTestsForConfigurations(testConfigurations, page) {
 async function executeTestPackage(title, tests) {
   output.runningDefinition(title);
   let results = [];
-  for(const test in tests) {
-    output.runningTest(test, currentTestNumber);
+  for(const testKey in tests) {
+    output.runningTest(tests[testKey].title, currentTestNumber);
     let passed = false;
     let exc;
     try {
-      await tests[test]();
+      await tests[testKey].definition();
       passed = true;
     } catch (e) {
       passed = false;
       exc = e;
     }
     output.testResult(passed, currentTestNumber);
-    results.push({packageTitle:title, title:test, testNumber:currentTestNumber, passed, exception:exc});
+    results.push({packageTitle:title, title:tests[testKey].title, testNumber:currentTestNumber, passed, exception:exc});
     if(breakpoints.indexOf(currentTestNumber) !== -1) {
       readlineSync.question('Breakpoint set, press <ENTER> to continue ');
     }
@@ -91,9 +104,7 @@ async function run(testConfigurations, page) {
   debug(`running ${testConfigurations.length} test packages`);
   const configurationCount = testConfigurations.length;
   const [testPackages, testCount] = registerAllTestsForConfigurations(testConfigurations, page);
-  debug(`registered ${testCount} tests`);
-
-  let resultSets;
+  debug(`registered ${testCount} tests`); let resultSets;
 
   resultSets = await executeTestPackages(testPackages, testCount);
 

@@ -41,7 +41,7 @@ Another neat thing to know is that you can run any (synchronous) JavaScript code
 ### Tests
 Let's get to the meat of things. Place your test packages in a directory, pass the `-T, --test-source` parameter to the CLI and fire away. But what does a test look like, tho?
 
-```
+```javascript
 module.exports = {
   title: "Home Page",
   definition: (page, test) => {
@@ -85,10 +85,54 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 
 Write all your tests and page movements wrapped inside of one of those functions, and please, do not write them like I did in that example. Use an assertion library instead.
 
+#### Partial Tests
+geisterbahn sports a recursive partial test system, meaning that tests can be entirely or partially comprised of partials, which in turn can also be comprised of partials, and so on and so forth. Provided you don't abuse this power and compose evil circle dependencies, this can be used as a powerful tool in order to prevent copy-pasting test definitions over and over again for complex test cases.
+
+Long story short, let's have an example! If you have a test like this:
+
+```javascript
+//homepage.js
+const assert = require('assert');
+module.exports = {
+  title: "Home Page",
+  definition: (page, test) => {
+    test("headline is correct", async () => {
+      await page.goto("/");
+      const pageTitle = await page.getHtml("h1");
+      assert(pageTitle === "Best Website Ever");
+    });
+  }
+}
+```
+
+And you want to write a test that also takes place on your home page, but you don't feel like repeating yourself, you could write a test that looks a little something like this:
+
+```javascript
+//homepage_subheadline.js
+const assert = require('assert');
+module.exports = {
+  title: "Home Page and Subheadline",
+  partials: ['homepage'],
+  definition: (page, test) => {
+    test("subheadline is correct", async () => {
+      await page.goto("/");
+      const pageSubheadline = await page.getHtml("h2");
+      assert(pageSubheadline === "It really is the Best Website Ever");
+    });
+  }
+}
+```
+
+The above definition would execute the definition of `homepage.js` first, as if it were part of `homepage_subheadline.js`. Coupled with the fact that geisterbahn only autoloads tests that don't start with an underscore, you can see where I might be going with this.
+
 ## Development / Contributing
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 1.4.0
+- discarded simple test dependency management
+- introduced more complex partial system
 
 #### 1.3.0
 - introduced simple test dependency management (undocumented for the time being)
