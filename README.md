@@ -24,6 +24,7 @@ After installing, run `./node_modules/.bin/geisterbahn help`; that should help. 
 | - | - |
 | `-b, --breakpoint` | Specify one or more numbers here (comma separated) and geisterbahn will halt execution after running the specified test(s) |
 | `-d, --device`  | The device you want Puppeteer to emulate during the test run, ex. `-d 'Galaxy Note II'`; see [puppeteer/DeviceDescriptors](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) for a full list of device types |
+| `-D, --devtools` | Launches all Chromium instances with DevTools tab enabled |
 | `-e, --environment` | The environment you want geisterbahn to run your tests under. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-g, --geisterbahnfile` | **Very important option** The directory containing your `geisterbahnfile`. Specify this in case your `geisterbahnfile` does not sit in the same directory you're calling `geisterbahn` from. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-l, --loop-point` | Repeat all tests after hitting the test case specified by this option |
@@ -44,15 +45,15 @@ Let's get to the meat of things. Place your test packages in a directory, pass t
 ```javascript
 module.exports = {
   title: "Home Page",
-  definition: (page, test) => {
-    test("headline is correct", async () => {
+  definition: test => {
+    test("headline is correct", async page => {
       await page.goto("/");
       const pageTitle = await page.getHtml("h1");
       if(pageTitle !== "Best Website Ever") {
         throw new Error("this is the worst day ever");
       }
     });
-    test("headline is really correct", async () => {
+    test("headline is really correct", async page => {
       const pageTitle = await page.getHtml("h1");
       if(pageTitle !== "Super Best Website Ever") {
         throw new Error("oh no, not again!");
@@ -95,8 +96,8 @@ Long story short, let's have an example! If you have a test like this:
 const assert = require('assert');
 module.exports = {
   title: "Home Page",
-  definition: (page, test) => {
-    test("headline is correct", async () => {
+  definition: test => {
+    test("headline is correct", async page => {
       await page.goto("/");
       const pageTitle = await page.getHtml("h1");
       assert(pageTitle === "Best Website Ever");
@@ -113,8 +114,8 @@ const assert = require('assert');
 module.exports = {
   title: "Home Page and Subheadline",
   partials: ['homepage'],
-  definition: (page, test) => {
-    test("subheadline is correct", async () => {
+  definition: test => {
+    test("subheadline is correct", async page => {
       await page.goto("/");
       const pageSubheadline = await page.getHtml("h2");
       assert(pageSubheadline === "It really is the Best Website Ever");
@@ -129,6 +130,12 @@ The above definition would execute the definition of `homepage.js` first, as if 
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 2.0.0
+- changed defintion and test function signature: this update will break all of your tests, hooray!
+- browser now closes and re-opens after every test package has run, making tests much more consistent
+- require-cached versions of tests and partials are now discarded, making tests EVEN MORE consistent
+- introduced --devtools option
 
 #### 1.4.1
 - addded possibility to inject arguments into test partials
