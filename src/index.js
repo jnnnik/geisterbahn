@@ -11,7 +11,8 @@ const output = require("./lib/output");
 const pageAugmentations = require("./lib/page-augmentations");
 
 const puppeteerOptions = {
-  headless: !args.show
+  headless: !args.show,
+  devtools: !!args.devtools
 };
 
 module.exports = {
@@ -36,13 +37,7 @@ module.exports = {
         const userInput = readlineSync.question('Loop point hit; press <Enter> to restart, enter "q" to quit: ');
         if(userInput === 'q') break;
       }
-      browser.close();
     } while (result.loop);
-
-    if(args.show) {
-      readlineSync.question("All done here, press <Enter> to exit");
-    }
-
 
     process.exit(result.returnCode);
   }
