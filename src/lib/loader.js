@@ -69,6 +69,10 @@ function requireFromTestDir(testName) {
   const requirePath = path.resolve(testDir, testName);
   debug(`requiring ${testName} from ${requirePath}`);
   try {
+    const cachedPath = `${requirePath}.js`;
+    if(require.cache[cachedPath] !== undefined) {
+      delete require.cache[cachedPath];
+    }
     return require(requirePath);
   } catch(e) {
     output.fatalError(`Unable to load test ${requirePath}`, e);

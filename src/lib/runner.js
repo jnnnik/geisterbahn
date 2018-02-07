@@ -1,9 +1,11 @@
 const debug = require("debug")("geisterbahn:runner");
+const puppeteer = require("puppeteer");
 const readlineSync = require("readline-sync");
 
 const loader = require("./loader");
 const output = require("./output");
 const args = require("./args");
+const pageAugmentations = require("./page-augmentations");
 
 const results = [];
 const breakpoints =
@@ -28,16 +30,16 @@ function determineReturnCodeForResults(results) {
   return 0;
 }
 
-function registerAllTestsForConfigurations(testConfigurations, page) {
+function registerAllTestsForConfigurations(testConfigurations) {
   let tests = {};
   let testCount = 0;
 
   function registerDefinition(key, title, definition, args) {
-    definition(page, (testTitle, testDefinition) => {
+    definition((testTitle, testDefinition) => {
       testCount++;
       if(!tests[key]) tests[key] = {title: title, tests: {}};
       tests[key]['tests'][`${testTitle}${testCount}`] = {definition: testDefinition, title: testTitle};
-    }, args);
+    }, Object.assign({}, args));
   }
 
   for(let i=0, j=testConfigurations.length; i<j; i++) {
@@ -57,15 +59,30 @@ function registerAllTestsForConfigurations(testConfigurations, page) {
   return [tests, testCount];
 }
 
+async function initPage() {
+  const browser = await puppeteer.launch(puppeteerOptions);
+  const page = await browser.newPage();
+
+  if(args.device) {
+    await page.emulate(devices[args.device]);
+  }
+  await pageAugmentations.augment(page);
+
+  return [browser,page];
+}
+
 async function executeTestPackage(title, tests) {
   output.runningDefinition(title);
   let results = [];
+  const [browser, page] = (await initPage());
+
   for(const testKey in tests) {
+
     output.runningTest(tests[testKey].title, currentTestNumber);
     let passed = false;
     let exc;
     try {
-      await tests[testKey].definition();
+      await tests[testKey].definition(page);
       passed = true;
     } catch (e) {
       passed = false;
@@ -82,6 +99,9 @@ async function executeTestPackage(title, tests) {
     }
     currentTestNumber++;
   }
+
+  browser.close();
+
   return results;
 }
 
@@ -100,10 +120,11 @@ async function executeTestPackages(testPackages, testCount) {
   return resultSets;
 }
 
-async function run(testConfigurations, page) {
+async function run(testConfigurations, options) {
+  puppeteerOptions = options;
   debug(`running ${testConfigurations.length} test packages`);
   const configurationCount = testConfigurations.length;
-  const [testPackages, testCount] = registerAllTestsForConfigurations(testConfigurations, page);
+  const [testPackages, testCount] = registerAllTestsForConfigurations(testConfigurations);
   debug(`registered ${testCount} tests`); let resultSets;
 
   resultSets = await executeTestPackages(testPackages, testCount);
