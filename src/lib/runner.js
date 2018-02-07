@@ -88,6 +88,7 @@ async function executeTestPackage(title, tests) {
       passed = false;
       exc = e;
     }
+    await page.clearResponseMocks();
     output.testResult(passed, currentTestNumber);
     results.push({packageTitle:title, title:tests[testKey].title, testNumber:currentTestNumber, passed, exception:exc});
     if(breakpoints.indexOf(currentTestNumber) !== -1) {

@@ -1,5 +1,7 @@
 const env = require("./config").env;
 
+const REQUEST_INTERCEPTOR_COLLECTION = Symbol('request interceptor collection');
+
 module.exports = {
   augment: async (page) => {
     if(env.additionalHeaders) {
@@ -40,5 +42,39 @@ module.exports = {
     page.clickAndWait = async function clickAndWait(selector) {
       return Promise.all([page.waitForNavigation(), page.click(selector)]);
     };
+
+    function onRequest(req) {
+      let captured = false;
+      for(const interceptorConfig of page[REQUEST_INTERCEPTOR_COLLECTION]) {
+        if(
+          req.method().match(interceptorConfig.method) !== null &&
+          req.url().match(interceptorConfig.url) !== null
+        ) {
+          captured = true;
+          req.respond(interceptorConfig.response);
+        }
+      }
+
+      if(!captured) req.continue();
+    }
+
+    page.mockResponse = async function mockResponse(method, url, response) {
+      await page.setRequestInterception(true);
+      if(!page[REQUEST_INTERCEPTOR_COLLECTION]) {
+        page[REQUEST_INTERCEPTOR_COLLECTION] = [];
+        page.on('request', onRequest);
+      }
+      page[REQUEST_INTERCEPTOR_COLLECTION].push({
+        method, url, response
+      });
+    };
+  
+    page.clearResponseMocks = async function clearResponseMocks() {
+      await page.setRequestInterception(false);
+      if(page[REQUEST_INTERCEPTOR_COLLECTION]) {
+        delete page[REQUEST_INTERCEPTOR_COLLECTION];
+        page.removeListener('request', onRequest);
+      }
+    }
   }
 }

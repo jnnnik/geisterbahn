@@ -80,6 +80,7 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 | `.getAttribute(selector, attributeName)` | Utility function that returns a `Promise<String>` containing the attribute named `attributeName` for the DOM node matching `selector` |
 | `.getElementCount(selector)` | Utility function that returns a `Promise<int>` containing the number of DOM nodes matching `selector` |
 | `.clickAndWait(selector)` | Clicks on `selector` and waits for navigation - useful for links and such |
+| `.mockResponse(method, url, response)` | Returns `response` whenever `method` and `url` match the specified parameters. See [Puppeteer Docs](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestrespondresponse). Response mocks are scoped to each `test()` call and automatically cleared afterwards. |
 
 #### Test Function
 `test` is a function that takes two parameters: A human readable string description of the second parameter, which is an async function containing test logic.
@@ -130,6 +131,9 @@ The above definition would execute the definition of `homepage.js` first, as if 
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 2.1.0
+- added response mocking page augmentation
 
 #### 2.0.0
 - changed defintion and test function signature: this update will break all of your tests, hooray!
