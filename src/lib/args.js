@@ -9,6 +9,7 @@ args
   .option("environment", "Environment to use")
   .option("geisterbahnfile", "Directory containing geisterbahnfile.js", ".")
   .option("breakpoints", "Halt execution after running the test with the specified number(s) (comma separated)")
-  .option("loop-point", "Repeat execution after running the test with the specified number");
+  .option("loop-point", "Repeat execution after running the test with the specified number")
+  .option("slow-mo", "Delay browser actions by the millisecond amount provided by this option");
 
 module.exports = args.parse(process.argv);

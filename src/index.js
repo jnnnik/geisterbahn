@@ -9,7 +9,8 @@ const output = require("./lib/output");
 
 const puppeteerOptions = {
   headless: !args.show,
-  devtools: !!args.devtools
+  devtools: !!args.devtools,
+  slowMo: args.slowMo
 };
 
 module.exports = {
