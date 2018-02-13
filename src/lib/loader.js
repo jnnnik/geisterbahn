@@ -97,15 +97,22 @@ function requirePartials(partials, partialDefinitions) {
 
 function requireTest(testName) {
   debug(`requireTest("${testName}")`);
-  const required = requireFromTestDir(testName);
-  required.name = testName;
-  if(required.partials) {
-    debug('requiring partials');
-    required.partialDefinitions = [];
-    requirePartials(required.partials, required.partialDefinitions);    
+  let requiredPackages = requireFromTestDir(testName);
+  if(!Array.isArray(requiredPackages)) {
+    requiredPackages = [requiredPackages];
   }
-  debug(`pushing ${testName} onto the test stack`);
-  requiredTests.push(required);
+
+  for(var i=0,j=requiredPackages.length; i<j; i++) {
+    const required = requiredPackages[i];
+    required.name = `testName#${i}`;
+    if(required.partials) {
+      debug('requiring partials');
+      required.partialDefinitions = [];
+      requirePartials(required.partials, required.partialDefinitions);    
+    }
+    debug(`pushing ${testName} onto the test stack`);
+    requiredTests.push(required);
+  }
 }
 
 module.exports = { load, loadAll };

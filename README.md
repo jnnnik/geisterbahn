@@ -69,6 +69,8 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 
 `definition` is passed two arguments: An object named `page` and a function named `test`.
 
+If you export an array of objects formatted like this, geisterbahn will treat each entry as a separate test package.
+
 #### Page Object
 
 `page` is basically just an instance of Puppeteer's [Page](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page), however slightly modified in a small number of ways, which I'll go into a bit of detail about right now.
@@ -133,6 +135,9 @@ The above definition would execute the definition of `homepage.js` first, as if 
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 2.3.0
+- added option to export test definitions as array
 
 #### 2.2.0
 - added -S, --slow-mo option
