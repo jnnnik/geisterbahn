@@ -76,5 +76,13 @@ module.exports = {
         page.removeListener('request', onRequest);
       }
     }
+
+    page.hitBackButton = async function hitBackButton() {
+      try {
+        return (await page.goBack({timeout:1}));
+      } catch(_) { 
+        return null;
+      }
+    }
   }
 }

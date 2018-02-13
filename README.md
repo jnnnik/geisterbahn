@@ -29,6 +29,7 @@ After installing, run `./node_modules/.bin/geisterbahn help`; that should help. 
 | `-g, --geisterbahnfile` | **Very important option** The directory containing your `geisterbahnfile`. Specify this in case your `geisterbahnfile` does not sit in the same directory you're calling `geisterbahn` from. See [geisterbahnfile.js](#geisterbahnfilejs) for more information |
 | `-l, --loop-point` | Repeat all tests after hitting the test case specified by this option |
 | `-s, --show` | Despite Puppeteer being a headless Chrome, you can give it its head back and show the browser running your tests using this option |
+| `-S, --slow-mo` | Delay browser actions by the amount (in ms) passed to this option |
 | `-T, --test-source` | The directory containing your test files. Use this if you want to run tests from a directory other than the one specified in your `geisterbahnfile`. See [Tests](#tests) for more information |
 | `-t, --tests` | If you don't want to run all of your tests at once, specify a list of tests using this option and only those will be run. Comma separated |
 
@@ -81,6 +82,7 @@ So, a test file is just a PO**JS**O (plain old JS-object) with two important key
 | `.getElementCount(selector)` | Utility function that returns a `Promise<int>` containing the number of DOM nodes matching `selector` |
 | `.clickAndWait(selector)` | Clicks on `selector` and waits for navigation - useful for links and such |
 | `.mockResponse(method, url, response)` | Returns `response` whenever `method` and `url` match the specified parameters. See [Puppeteer Docs](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestrespondresponse). Response mocks are scoped to each `test()` call and automatically cleared afterwards. |
+| `.hitBackButton()` | Same as Puppeteer's Page.goBack() except it doesn't wait for navigation to occur at all - use this for testing single page applications |
 
 #### Test Function
 `test` is a function that takes two parameters: A human readable string description of the second parameter, which is an async function containing test logic.
@@ -131,6 +133,10 @@ The above definition would execute the definition of `homepage.js` first, as if 
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 2.2.0
+- added -S, --slow-mo option
+- added page.hitBackButton() augmentation for single page application testing
 
 #### 2.1.0
 - added response mocking page augmentation
