@@ -83,7 +83,7 @@ If you export an array of objects formatted like this, geisterbahn will treat ea
 | `.getAttribute(selector, attributeName)` | Utility function that returns a `Promise<String>` containing the attribute named `attributeName` for the DOM node matching `selector` |
 | `.getElementCount(selector)` | Utility function that returns a `Promise<int>` containing the number of DOM nodes matching `selector` |
 | `.clickAndWait(selector)` | Clicks on `selector` and waits for navigation - useful for links and such |
-| `.mockResponse(method, url, response)` | Returns `response` whenever `method` and `url` match the specified parameters. See [Puppeteer Docs](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestrespondresponse). Response mocks are scoped to each `test()` call and automatically cleared afterwards. |
+| `.mockResponse(method, url, response)` | Returns `response` whenever `method` and `url` match the specified parameters. See [Puppeteer Docs](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#requestrespondresponse). |
 | `.hitBackButton()` | Same as Puppeteer's Page.goBack() except it doesn't wait for navigation to occur at all - use this for testing single page applications |
 
 #### Test Function
@@ -135,6 +135,9 @@ The above definition would execute the definition of `homepage.js` first, as if 
 What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still very much in active development right now, and there's tons I need to figure out before even trying to get into that whole scene. There's probably gonna be some sort of documentation on how to develop / contribute to this project. It's relatively straightforward to get into. I'm not gonna make any promises regarding issues and/or pull requests yet, tho. I'll *try* to be good about those.
 
 ## Version History
+
+#### 2.3.1
+- disable automatic clearing of response mocks
 
 #### 2.3.0
 - added option to export test definitions as array

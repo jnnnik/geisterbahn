@@ -1,6 +1,6 @@
 {
   "name": "geisterbahn",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "geisterbahn - web testing utility for Puppeteer",
   "main": "src/index.js",
   "author": "Jannik Lemberg",
