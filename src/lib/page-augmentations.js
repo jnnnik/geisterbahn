@@ -46,12 +46,19 @@ module.exports = {
     function onRequest(req) {
       let captured = false;
       for(const interceptorConfig of page[REQUEST_INTERCEPTOR_COLLECTION]) {
+        const methodMatch = req.method().match(interceptorConfig.method);
+        const urlMatch = req.url().match(interceptorConfig.url);
         if(
-          req.method().match(interceptorConfig.method) !== null &&
-          req.url().match(interceptorConfig.url) !== null
+          methodMatch !== null &&
+          urlMatch !== null
         ) {
           captured = true;
-          req.respond(interceptorConfig.response);
+          const mockedResponse = 
+            (typeof interceptorConfig.response === 'function') ? 
+              interceptorConfig.response(urlMatch) :
+              interceptorConfig.response;
+
+          req.respond(mockedResponse);
         }
       }
 
