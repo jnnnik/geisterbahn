@@ -61,6 +61,11 @@ function registerAllTestsForConfigurations(testConfigurations) {
 
 async function initPage() {
   const browser = await puppeteer.launch(puppeteerOptions);
+  
+  browser.on('disconnected', () => {
+    output.fatalError('INTERRUPTED');
+  });
+
   const page = await browser.newPage();
 
   if(args.device) {
