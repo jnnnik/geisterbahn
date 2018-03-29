@@ -136,6 +136,9 @@ What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still ver
 
 ## Version History
 
+#### 2.4.1
+- fixed CTRL+C behavior
+
 #### 2.4.0
 - bumped puppeteer version to 1.2.0
 - added more flexible mocking capabilities

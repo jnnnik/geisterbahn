@@ -16,6 +16,7 @@ const loopPoint = parseInt(args.loopPoint);
 
 let currentTestNumber;
 let loopPointTriggered = false;
+let allDone = false;
 
 function determineReturnCodeForResults(results) {
   debug("determining return code based on results");
@@ -62,8 +63,10 @@ function registerAllTestsForConfigurations(testConfigurations) {
 async function initPage() {
   const browser = await puppeteer.launch(puppeteerOptions);
   
-  browser.on('disconnected', () => {
-    output.fatalError('INTERRUPTED');
+  browser.on('disconnected', e => {
+    if(!allDone) {
+      output.fatalError('INTERRUPTED');
+    }
   });
 
   const page = await browser.newPage();
@@ -105,6 +108,7 @@ async function executeTestPackage(title, tests) {
     currentTestNumber++;
   }
 
+  allDone = true;
   browser.close();
 
   return results;
