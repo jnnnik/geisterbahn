@@ -13,10 +13,12 @@ const breakpoints =
   .map(unparsed => parseInt(unparsed));
 
 const loopPoint = parseInt(args.loopPoint);
+const exitOnError = args.exitOnFirstError;
 
 let currentTestNumber;
 let loopPointTriggered = false;
 let harmlessClose = false;
+let errorEncountered = false;
 
 function determineReturnCodeForResults(results) {
   debug("determining return code based on results");
@@ -107,6 +109,10 @@ async function executeTestPackage(title, tests) {
       loopPointTriggered = true;
       break;
     }
+    if(passed === false && exitOnError === true) {
+      errorEncountered = true;
+      break;
+    }
     currentTestNumber++;
   }
 
@@ -124,7 +130,7 @@ async function executeTestPackages(testPackages, testCount) {
   for(const testPackageKey in testPackages) {
     const testPackage = testPackages[testPackageKey];
     resultSets.push( await executeTestPackage(testPackage.title, testPackage.tests) );
-    if(loopPointTriggered) {
+    if(loopPointTriggered || errorEncountered) {
       break;
     }
   }
