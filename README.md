@@ -136,6 +136,9 @@ What? Oh. Open Source Software. I get it. Yeah. Well, `geisterbahn` is still ver
 
 ## Version History
 
+#### 2.5.0
+- added -E option: stop on first error
+
 #### 2.4.2
 - actually fixed CTRL+C behavior
 
