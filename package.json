@@ -1,6 +1,6 @@
 {
   "name": "geisterbahn",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "geisterbahn - web testing utility for Puppeteer",
   "main": "src/index.js",
   "author": "Jannik Lemberg",
@@ -11,7 +11,7 @@
     "args": "^3.0.4",
     "colors": "^1.1.2",
     "debug": "^3.0.0",
-    "puppeteer": "^1.2.0",
+    "puppeteer": "^1.8.0",
     "readline-sync": "^1.4.7"
   }
 }
