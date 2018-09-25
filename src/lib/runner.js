@@ -1,4 +1,5 @@
 const debug = require("debug")("geisterbahn:runner");
+const devices = require('puppeteer/DeviceDescriptors');
 const puppeteer = require("puppeteer");
 const readlineSync = require("readline-sync");
 
